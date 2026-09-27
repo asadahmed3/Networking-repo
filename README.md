@@ -21,9 +21,9 @@ Browser → Route 53 A record → EC2 public IPv4 → security group (TCP 80) �
 
 I registered `asad-ahmed.ca` and used a Route 53 public hosted zone to manage its DNS records. I chose a subdomain, `nginx-server.asad-ahmed.ca`, so the service would have a descriptive address while leaving the root domain available for other uses.
 
-![Successful domain registration notification](screenshots/domain-registration.png)
+![Successful domain registration notification](domain-registration.png)
 
-![Route 53 public hosted zone for asad-ahmed.ca](screenshots/route53-hosted-zone.png)
+![Route 53 public hosted zone for asad-ahmed.ca](route53-hosted-zone.png)
 
 ## 2. Launch EC2 and configure access
 
@@ -31,7 +31,7 @@ I launched an Amazon Linux 2023 EC2 instance. Amazon Linux gave me a straightfor
 
 I initially omitted SSH. Once I needed to connect to install NGINX, I added inbound TCP port 22 with my IP address as the source. Limiting SSH to my IP reduced the number of networks that could attempt to connect. The screenshot shows the final security group rules.
 
-![EC2 instance and its inbound HTTP and SSH rules](screenshots/ec2-security-group.png)
+![EC2 instance and its inbound HTTP and SSH rules](ec2-security-group.png)
 
 ## 3. Connect and install NGINX
 
@@ -47,15 +47,15 @@ sudo systemctl start nginx
 
 The key permission change protects the local key file; the security group separately controls whether SSH traffic can reach the instance. I used NGINX's default page to verify the hosting and networking path before adding any custom site content. The SSH screenshot records the connection and installation command; the browser result below confirms the server was serving the page.
 
-![Setting private key file permissions](screenshots/key-permissions.png)
+![Setting private key file permissions](key-permissions.png)
 
-![SSH connection to Amazon Linux and NGINX installation command](screenshots/ssh-nginx-install.png)
+![SSH connection to Amazon Linux and NGINX installation command](ssh-nginx-install.png)
 
 ## 4. Point the hostname to EC2
 
 I created a Route 53 **A record** for `nginx-server.asad-ahmed.ca` pointing to the instance's public IPv4 address. An A record was the direct way to connect this hostname to an IPv4 server. At the time of the screenshots, the address was `98.92.227.114`.
 
-![Route 53 A record pointing the subdomain to EC2](screenshots/route53-a-record.png)
+![Route 53 A record pointing the subdomain to EC2](route53-a-record.png)
 
 ## 5. Verify DNS and the web page
 
@@ -67,11 +67,11 @@ nslookup nginx-server.asad-ahmed.ca
 
 The result matched the A record, `98.92.227.114`. This confirmed DNS resolution independently of the browser.
 
-![nslookup result for nginx-server.asad-ahmed.ca](screenshots/dns-lookup.png)
+![nslookup result for nginx-server.asad-ahmed.ca](dns-lookup.png)
 
 I then opened **`http://nginx-server.asad-ahmed.ca`** and saw the **Welcome to nginx!** page. This verified that the browser could resolve the hostname, reach port 80 on the instance, and receive a response from NGINX.
 
-![NGINX welcome page loaded through the custom hostname over HTTP](screenshots/nginx-browser.png)
+![NGINX welcome page loaded through the custom hostname over HTTP](nginx-browser.png)
 
 ## Challenges and fixes
 
